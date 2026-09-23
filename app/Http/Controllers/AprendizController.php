@@ -40,28 +40,43 @@ class AprendizController extends Controller
 
 
     public function update(Request $request, $id)
-    {
+{
+    $aprendiz = Aprendiz::findOrFail($id);
 
-        $aprendiz = Aprendiz::find($id);
+    $antes = $aprendiz->toArray();
 
-        $aprendiz->update($request->all());
+    $aprendiz->update($request->all());
 
-        return $aprendiz;
+    Historial::create([
+        'aprendiz_id' => $aprendiz->id,
+        'accion' => 'ACTUALIZADO',
+        'datos' => [
+            'antes' => $antes,
+            'despues' => $aprendiz->fresh()->toArray()
+        ]
+    ]);
 
-    }
+    return $aprendiz;
+}
 
+public function destroy($id)
+{
+    $aprendiz = Aprendiz::findOrFail($id);
 
+    $datos = $aprendiz->toArray();
 
-    public function destroy($id)
-    {
+    $aprendiz->delete();
 
-        Aprendiz::destroy($id);
+    Historial::create([
+        'aprendiz_id' => $id,
+        'accion' => 'ELIMINADO',
+        'datos' => $datos
+    ]);
 
-        return response()->json([
-            "mensaje"=>"Aprendiz eliminado correctamente"
-        ]);
-
-    }
+    return response()->json([
+        'mensaje' => 'Aprendiz eliminado correctamente'
+    ]);
+}
 
 
 }
