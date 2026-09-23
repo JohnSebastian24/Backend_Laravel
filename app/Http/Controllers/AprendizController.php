@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aprendiz;
 use Illuminate\Http\Request;
+use App\Models\Historial;
 
 class AprendizController extends Controller
 {
@@ -17,9 +18,17 @@ class AprendizController extends Controller
 
 
     public function store(Request $request)
-    {
-        return Aprendiz::create($request->all());
-    }
+{
+    $aprendiz = Aprendiz::create($request->all());
+
+    Historial::create([
+        'aprendiz_id' => $aprendiz->id,
+        'accion' => 'CREADO',
+        'datos' => $aprendiz->toArray()
+    ]);
+
+    return $aprendiz;
+}
 
 
 

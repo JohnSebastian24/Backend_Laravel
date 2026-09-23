@@ -6,7 +6,11 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libzip-dev \
-    && docker-php-ext-install pdo_mysql zip
+    pkg-config \
+    libssl-dev \
+    && docker-php-ext-install pdo_mysql zip \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -19,6 +23,11 @@ RUN chown -R www-data:www-data /var/www/html/storage \
 
 RUN a2enmod rewrite
 
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]
 EXPOSE 80
 
 CMD ["apache2-foreground"]
