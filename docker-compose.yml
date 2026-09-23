@@ -16,6 +16,8 @@ services:
       - ./database:/var/www/html/database
       - ./resources:/var/www/html/resources
       - ./config:/var/www/html/config
+      - ./composer.json:/var/www/html/composer.json
+      - ./composer.lock:/var/www/html/composer.lock
 
     depends_on:
       - mysql
