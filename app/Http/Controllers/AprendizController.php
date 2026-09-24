@@ -16,7 +16,7 @@ class AprendizController extends Controller
     }
 
 
-
+//FUNCION CREAR APRENDIZ Y GUARDAR EN HISTORIAL
     public function store(Request $request)
 {
     $aprendiz = Aprendiz::create($request->all());
@@ -31,14 +31,14 @@ class AprendizController extends Controller
 }
 
 
-
+//FUNCION MOSTRAR APRENDIZ POR ID
     public function show($id)
     {
         return Aprendiz::find($id);
     }
 
 
-
+//FUNCION ACTUALIZAR APRENDIZ Y GUARDAR EN HISTORIAL
     public function update(Request $request, $id)
 {
     $aprendiz = Aprendiz::findOrFail($id);
@@ -58,6 +58,8 @@ class AprendizController extends Controller
 
     return $aprendiz;
 }
+
+//FUNCION ELIMINAR APRENDIZ Y GUARDAR EN HISTORIAL
 
 public function destroy($id)
 {
