@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+//DEFINE LA ESTRUCTURA DE LA TABLA USERS EN LA BASE DE DATOS
+
 return new class extends Migration
 {
     /**
