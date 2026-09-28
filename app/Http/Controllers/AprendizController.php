@@ -8,77 +8,83 @@ use App\Models\Historial;
 
 class AprendizController extends Controller
 {
-
-
+    // MOSTRAR TODOS LOS APRENDICES
     public function index()
     {
         return Aprendiz::all();
     }
 
 
-//FUNCION CREAR APRENDIZ Y GUARDAR EN HISTORIAL
+    // CREAR APRENDIZ
     public function store(Request $request)
-{
-    $aprendiz = Aprendiz::create($request->all());
+    {
+        $aprendiz = Aprendiz::create($request->all());
 
-    Historial::create([
-        'aprendiz_id' => $aprendiz->id,
-        'accion' => 'CREADO',
-        'datos' => $aprendiz->toArray()
-    ]);
+        // MongoDB solamente en entorno local
+        if (app()->environment('local')) {
+            Historial::create([
+                'aprendiz_id' => $aprendiz->id,
+                'accion' => 'CREADO',
+                'datos' => $aprendiz->toArray()
+            ]);
+        }
 
-    return $aprendiz;
-}
+        return $aprendiz;
+    }
 
 
-//FUNCION MOSTRAR APRENDIZ POR ID
+    // MOSTRAR APRENDIZ POR ID
     public function show($id)
     {
         return Aprendiz::find($id);
     }
 
 
-//FUNCION ACTUALIZAR APRENDIZ Y GUARDAR EN HISTORIAL
+    // ACTUALIZAR APRENDIZ
     public function update(Request $request, $id)
-{
-    $aprendiz = Aprendiz::findOrFail($id);
+    {
+        $aprendiz = Aprendiz::findOrFail($id);
 
-    $antes = $aprendiz->toArray();
+        $antes = $aprendiz->toArray();
 
-    $aprendiz->update($request->all());
+        $aprendiz->update($request->all());
 
-    Historial::create([
-        'aprendiz_id' => $aprendiz->id,
-        'accion' => 'ACTUALIZADO',
-        'datos' => [
-            'antes' => $antes,
-            'despues' => $aprendiz->fresh()->toArray()
-        ]
-    ]);
+        // MongoDB solamente en entorno local
+        if (app()->environment('local')) {
+            Historial::create([
+                'aprendiz_id' => $aprendiz->id,
+                'accion' => 'ACTUALIZADO',
+                'datos' => [
+                    'antes' => $antes,
+                    'despues' => $aprendiz->fresh()->toArray()
+                ]
+            ]);
+        }
 
-    return $aprendiz;
-}
-
-//FUNCION ELIMINAR APRENDIZ Y GUARDAR EN HISTORIAL
-
-public function destroy($id)
-{
-    $aprendiz = Aprendiz::findOrFail($id);
-
-    $datos = $aprendiz->toArray();
-
-    $aprendiz->delete();
-
-    Historial::create([
-        'aprendiz_id' => $id,
-        'accion' => 'ELIMINADO',
-        'datos' => $datos
-    ]);
-
-    return response()->json([
-        'mensaje' => 'Aprendiz eliminado correctamente'
-    ]);
-}
+        return $aprendiz;
+    }
 
 
+    // ELIMINAR APRENDIZ
+    public function destroy($id)
+    {
+        $aprendiz = Aprendiz::findOrFail($id);
+
+        $datos = $aprendiz->toArray();
+
+        $aprendiz->delete();
+
+        // MongoDB solamente en entorno local
+        if (app()->environment('local')) {
+            Historial::create([
+                'aprendiz_id' => $id,
+                'accion' => 'ELIMINADO',
+                'datos' => $datos
+            ]);
+        }
+
+        return response()->json([
+            'mensaje' => 'Aprendiz eliminado correctamente'
+        ]);
+    }
 }
